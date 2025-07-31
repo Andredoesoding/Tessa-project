@@ -256,26 +256,7 @@
             transition: opacity 0.3s ease;
         }
 
-        .tessa-image.error {
-            display: none;
-        }
 
-        .image-fallback {
-            display: none;
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            height: 300px;
-            border-radius: 15px;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: #666;
-            margin: 20px 0;
-            border: 3px dashed #ccc;
-        }
-
-        .image-fallback.show {
-            display: flex;
-        }
 
     </style>
 </head>
@@ -331,15 +312,7 @@
         <div class="content-section">
             <h2 class="section-title">Tessa's Picture of the Day  (avrei voluto prendere una foto di te che dormi la bocca aperta ma questo è meglio mi sa) </h2>
             <div class="image-container">
-                <img src="tessa-optimized.jpg?v=1" alt="Tessa's picture of the day" class="tessa-image" onerror="this.classList.add('error'); document.getElementById('imageFallback').classList.add('show');">
-                <div id="imageFallback" class="image-fallback">
-                    <div>
-                        <p>🖼️ Loading optimized image (96KB)...</p>
-                        <p style="font-size: 1rem; margin-top: 10px;">This should load quickly now!</p>
-                        <p style="font-size: 0.9rem; margin-top: 5px;">If it doesn't load, try refreshing the page</p>
-                        <button onclick="location.reload()" style="margin-top: 15px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">🔄 Retry Loading</button>
-                    </div>
-                </div>
+                <img src="tessa-optimized.jpg" alt="Tessa's picture of the day" class="tessa-image">
             </div>
         </div>
 
@@ -725,45 +698,7 @@
             alert('Thank you for your evaluation! This form is for demonstration purposes only.');
         });
 
-        // Handle image loading
-        window.addEventListener('load', function() {
-            const img = document.querySelector('.tessa-image');
-            const fallback = document.getElementById('imageFallback');
-            
-            if (img && fallback) {
-                console.log('Image element found:', img.src);
-                
-                // Show fallback initially
-                fallback.classList.add('show');
-                
-                // Check if image is already loaded
-                if (img.complete && img.naturalHeight !== 0) {
-                    console.log('Image already loaded!');
-                    fallback.classList.remove('show');
-                } else {
-                    img.addEventListener('load', function() {
-                        console.log('Image loaded successfully!');
-                        fallback.classList.remove('show');
-                    });
-                    
-                    img.addEventListener('error', function() {
-                        console.log('Image failed to load');
-                        this.classList.add('error');
-                        fallback.classList.add('show');
-                    });
 
-                    // Shorter timeout for optimized images
-                    setTimeout(function() {
-                        if (!img.complete) {
-                            console.log('Image taking too long, showing fallback');
-                            fallback.classList.add('show');
-                        }
-                    }, 3000); // 3 seconds timeout for optimized images
-                }
-            } else {
-                console.log('Image or fallback element not found');
-            }
-        });
     </script>
 </body>
 </html>
