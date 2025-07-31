@@ -335,7 +335,7 @@
                 <a href="https://www.youtube.com/watch?v=jEJa7t4ST0I" target="_blank">This D.J. - Warren G (YouTube)</a>
             </div>
         </div>
-
+        Sorry, there was an error sending your evaluation. Please try again.
         <!-- Evaluation Form Section -->
         <div class="form-container">
             <h2 class="form-title">Was I a Good Boyfriend? THE Evaluation Form</h2>
@@ -698,6 +698,7 @@
         (function() {
             // Initialize EmailJS with your public key
             emailjs.init("F1Wu85WRt5ezIyfSw");
+            console.log('EmailJS initialized with key: F1Wu85WRt5ezIyfSw');
         })();
     </script>
 
@@ -739,11 +740,12 @@
             // Send email using EmailJS
             emailjs.send('service_kpvecyf', 'template_0lg4zek', templateParams)
                 .then(function(response) {
+                    console.log('SUCCESS!', response);
                     alert('Thank you for your evaluation! It has been sent successfully.');
                     e.target.reset(); // Clear the form
                 }, function(error) {
-                    alert('Sorry, there was an error sending your evaluation. Please try again.');
-                    console.error('EmailJS Error:', error);
+                    console.log('FAILED...', error);
+                    alert('Sorry, there was an error sending your evaluation. Please try again.\n\nError details: ' + error.text);
                 })
                 .finally(function() {
                     // Reset button state
