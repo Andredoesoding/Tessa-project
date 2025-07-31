@@ -54,7 +54,7 @@
         // Test file access
         async function testFile() {
             try {
-                const response = await fetch('tessa-min.jpg');
+                const response = await fetch('tessa-optimized.jpg');
                 if (response.ok) {
                     const blob = await response.blob();
                     const sizeKB = (blob.size / 1024).toFixed(1);
@@ -73,7 +73,7 @@
 
         // Test different paths
         function testDifferentPaths() {
-            const paths = ['tessa-min.jpg', './tessa-min.jpg', '/tessa-min.jpg'];
+            const paths = ['tessa-optimized.jpg', './tessa-optimized.jpg', '/tessa-optimized.jpg'];
             let results = '<h4>Path Test Results:</h4>';
             
             paths.forEach(path => {

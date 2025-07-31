@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Image Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        img {
+            max-width: 100%;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Simple Image Test</h1>
+        <h2>Testing: tessa-optimized.jpg</h2>
+        
+        <p>If you can see the image below, it's working!</p>
+        
+        <img src="tessa-optimized.jpg" alt="Tessa" 
+             onload="document.getElementById('status').innerHTML = '<span class=\'success\'>✅ SUCCESS! Image loaded!</span>';"
+             onerror="document.getElementById('status').innerHTML = '<span class=\'error\'>❌ FAILED! Image did not load</span>';">
+        
+        <div id="status">Loading...</div>
+        
+        <p><strong>File should be:</strong> 96KB, tessa-optimized.jpg</p>
+        
+        <button onclick="location.reload()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 10px;">
+            🔄 Refresh Page
+        </button>
+    </div>
+</body>
+</html> 

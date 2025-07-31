@@ -90,7 +90,7 @@
         // File information
         async function getFileInfo() {
             try {
-                const response = await fetch('tessa.jpg', { method: 'HEAD' });
+                const response = await fetch('tessa-optimized.jpg', { method: 'HEAD' });
                 const fileInfo = document.getElementById('fileInfo');
                 
                 if (response.ok) {
@@ -136,7 +136,7 @@
 
         async function checkFileSize() {
             try {
-                const response = await fetch('tessa.jpg');
+                const response = await fetch('tessa-optimized.jpg');
                 const blob = await response.blob();
                 const sizeKB = (blob.size / 1024).toFixed(1);
                 const sizeMB = (blob.size / (1024 * 1024)).toFixed(1);
@@ -149,10 +149,10 @@
 
         function testDifferentPaths() {
             const paths = [
-                'tessa.jpg',
-                './tessa.jpg',
-                '/tessa.jpg',
-                '../tessa.jpg'
+                'tessa-optimized.jpg',
+                './tessa-optimized.jpg',
+                '/tessa-optimized.jpg',
+                '../tessa-optimized.jpg'
             ];
             
             let results = '<h4>Path Testing Results:</h4>';
