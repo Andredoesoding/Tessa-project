@@ -2,6 +2,24 @@
 
 A beautiful, responsive static website created for Tessa with daily facts, games, and a fun evaluation form.
 
+## ⚠️ Known Issues & Solutions
+
+### Image Loading Issue
+The `tessa.jpg` file is 4.1MB, which is too large for optimal web loading. This can cause:
+- Slow page loading
+- Image not displaying on slower connections
+- Potential timeout issues
+
+**Solutions:**
+1. **Use the included image optimizer**: Open `image-optimizer.html` in your browser to compress the image
+2. **Manual optimization**: Compress the image to under 500KB using any image editor
+3. **Recommended size**: 800x600px at 80% quality should reduce it to ~100-300KB
+
+### Spotify Link Issue
+The song link now includes both Spotify and YouTube options for better compatibility.
+
+## Features
+
 ## Features
 
 - 🌅 Beautiful gradient design with modern UI
@@ -64,9 +82,11 @@ To add Tessa's picture of the day, replace the image placeholder in the HTML:
 ## File Structure
 
 ```
-├── index.html          # Main website file
-├── vercel.json         # Vercel configuration
-└── README.md          # This file
+├── index.html              # Main website file
+├── vercel.json             # Vercel configuration
+├── tessa.jpg               # Tessa's image (4.1MB - needs optimization)
+├── image-optimizer.html    # Tool to compress the image
+└── README.md              # This file
 ```
 
 ## Technologies Used

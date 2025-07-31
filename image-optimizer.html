@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Optimizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .upload-area {
+            border: 2px dashed #ccc;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        .upload-area.dragover {
+            border-color: #007bff;
+            background: #f8f9fa;
+        }
+        #fileInput {
+            display: none;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        #preview {
+            max-width: 100%;
+            margin: 20px 0;
+        }
+        .info {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Optimizer for Tessa.jpg</h1>
+        <p>Your current image is 4.1MB, which is too large for web use. This tool will help you compress it.</p>
+        
+        <div class="info">
+            <strong>Recommended sizes for web:</strong>
+            <ul>
+                <li>Thumbnail: 150x150px (10-30KB)</li>
+                <li>Small: 300x300px (50-100KB)</li>
+                <li>Medium: 600x600px (100-300KB)</li>
+                <li>Large: 1200x1200px (300-800KB)</li>
+            </ul>
+        </div>
+
+        <div class="upload-area" id="uploadArea">
+            <p>Drag and drop your image here or click to select</p>
+            <button class="btn" onclick="document.getElementById('fileInput').click()">Select Image</button>
+            <input type="file" id="fileInput" accept="image/*">
+        </div>
+
+        <div id="controls" style="display: none;">
+            <h3>Compression Settings</h3>
+            <label>Quality: <input type="range" id="quality" min="0.1" max="1" step="0.1" value="0.8"> <span id="qualityValue">80%</span></label><br><br>
+            <label>Max Width: <input type="number" id="maxWidth" value="800" min="100" max="2000"> px</label><br><br>
+            <button class="btn" onclick="compressImage()">Compress & Download</button>
+        </div>
+
+        <canvas id="canvas" style="display: none;"></canvas>
+        <img id="preview" style="display: none;">
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const controls = document.getElementById('controls');
+        const preview = document.getElementById('preview');
+        const canvas = document.getElementById('canvas');
+        const qualitySlider = document.getElementById('quality');
+        const qualityValue = document.getElementById('qualityValue');
+        const maxWidthInput = document.getElementById('maxWidth');
+
+        let originalImage = null;
+
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        qualitySlider.addEventListener('input', (e) => {
+            qualityValue.textContent = Math.round(e.target.value * 100) + '%';
+        });
+
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                originalImage = new Image();
+                originalImage.onload = () => {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    controls.style.display = 'block';
+                    
+                    // Show original file size
+                    const sizeKB = (file.size / 1024).toFixed(1);
+                    const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+                    console.log(`Original size: ${sizeKB}KB (${sizeMB}MB)`);
+                };
+                originalImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function compressImage() {
+            if (!originalImage) return;
+
+            const quality = parseFloat(qualitySlider.value);
+            const maxWidth = parseInt(maxWidthInput.value);
+            
+            // Calculate new dimensions
+            let newWidth = originalImage.width;
+            let newHeight = originalImage.height;
+            
+            if (newWidth > maxWidth) {
+                newHeight = (maxWidth * newHeight) / newWidth;
+                newWidth = maxWidth;
+            }
+
+            // Set canvas dimensions
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+
+            // Draw and compress
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(originalImage, 0, 0, newWidth, newHeight);
+
+            // Convert to blob and download
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'tessa-optimized.jpg';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                // Show compression info
+                const originalSize = originalImage.src.length * 0.75; // Rough estimate
+                const compressedSize = blob.size;
+                const compressionRatio = ((originalSize - compressedSize) / originalSize * 100).toFixed(1);
+                
+                alert(`Compression complete!\nOriginal: ~${(originalSize/1024).toFixed(1)}KB\nCompressed: ${(compressedSize/1024).toFixed(1)}KB\nReduction: ${compressionRatio}%`);
+            }, 'image/jpeg', quality);
+        }
+    </script>
+</body>
+</html> 

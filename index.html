@@ -326,8 +326,10 @@
             <h2 class="section-title"> My song of the moment</h2>
             <p>déouverte récente sur spotify ose me dire que c'est pas bien mégère</p>
             <div class="link-card">
-                <a href="https://www.youtube.com/watch?v=jEJa7t4ST0I" target="_blank">This D.J.
-                Song by Warren G</a>
+                <a href="https://open.spotify.com/track/4uX3RLH5fx2N3D4MMAIx3O" target="_blank">🎵 This D.J. - Warren G (Spotify)</a>
+            </div>
+            <div class="link-card">
+                <a href="https://www.youtube.com/watch?v=jEJa7t4ST0I" target="_blank">🎥 This D.J. - Warren G (YouTube)</a>
             </div>
         </div>
 
@@ -691,6 +693,28 @@
         document.getElementById('evaluationForm').addEventListener('submit', function(e) {
             e.preventDefault();
             alert('Thank you for your evaluation! This form is for demonstration purposes only.');
+        });
+
+        // Handle image loading
+        window.addEventListener('load', function() {
+            const img = document.querySelector('.tessa-image');
+            const fallback = document.getElementById('imageFallback');
+            
+            if (img) {
+                // Show fallback initially
+                fallback.classList.add('show');
+                
+                img.addEventListener('load', function() {
+                    // Hide fallback when image loads successfully
+                    fallback.classList.remove('show');
+                });
+                
+                img.addEventListener('error', function() {
+                    // Keep fallback visible if image fails to load
+                    this.classList.add('error');
+                    fallback.classList.add('show');
+                });
+            }
         });
     </script>
 </body>
