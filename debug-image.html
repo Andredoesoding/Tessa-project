@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Debug Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { border-color: #28a745; background: #d4edda; }
+        .error { border-color: #dc3545; background: #f8d7da; }
+        .warning { border-color: #ffc107; background: #fff3cd; }
+        .info { border-color: #17a2b8; background: #d1ecf1; }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover { background: #0056b3; }
+        
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Image Debug Tool</h1>
+        <p>This tool will help diagnose why the image isn't loading on your website.</p>
+        
+        <div class="test-section info">
+            <h3>📋 File Information</h3>
+            <div id="fileInfo">Loading...</div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🖼️ Image Loading Test</h3>
+            <p>Testing if the image can be loaded:</p>
+            <img id="testImage" src="tessa.jpg" alt="Test image" onload="imageLoaded()" onerror="imageError()">
+            <div id="imageStatus">Loading...</div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔧 Quick Fixes</h3>
+            <button class="btn" onclick="optimizeImage()">📦 Open Image Optimizer</button>
+            <button class="btn" onclick="checkFileSize()">📏 Check File Size</button>
+            <button class="btn" onclick="testDifferentPaths()">🛤️ Test Different Paths</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>📊 Diagnostic Results</h3>
+            <div id="diagnostics">Running diagnostics...</div>
+        </div>
+    </div>
+
+    <script>
+        // File information
+        async function getFileInfo() {
+            try {
+                const response = await fetch('tessa.jpg', { method: 'HEAD' });
+                const fileInfo = document.getElementById('fileInfo');
+                
+                if (response.ok) {
+                    const size = response.headers.get('content-length');
+                    const sizeKB = (size / 1024).toFixed(1);
+                    const sizeMB = (size / (1024 * 1024)).toFixed(1);
+                    
+                    fileInfo.innerHTML = `
+                        <p><strong>✅ File exists and is accessible</strong></p>
+                        <p><strong>Size:</strong> ${sizeKB}KB (${sizeMB}MB)</p>
+                        <p><strong>Content-Type:</strong> ${response.headers.get('content-type')}</p>
+                        <p><strong>Last Modified:</strong> ${response.headers.get('last-modified')}</p>
+                    `;
+                    
+                    if (sizeMB > 1) {
+                        fileInfo.innerHTML += '<p class="warning">⚠️ File is very large for web use. Consider optimizing.</p>';
+                    }
+                } else {
+                    fileInfo.innerHTML = '<p class="error">❌ File not found or not accessible</p>';
+                }
+            } catch (error) {
+                document.getElementById('fileInfo').innerHTML = `<p class="error">❌ Error accessing file: ${error.message}</p>`;
+            }
+        }
+
+        // Image loading test
+        function imageLoaded() {
+            const status = document.getElementById('imageStatus');
+            status.innerHTML = '<p class="success">✅ Image loaded successfully!</p>';
+            status.className = 'test-section success';
+        }
+
+        function imageError() {
+            const status = document.getElementById('imageStatus');
+            status.innerHTML = '<p class="error">❌ Image failed to load</p>';
+            status.className = 'test-section error';
+        }
+
+        // Quick fixes
+        function optimizeImage() {
+            window.open('image-optimizer.html', '_blank');
+        }
+
+        async function checkFileSize() {
+            try {
+                const response = await fetch('tessa.jpg');
+                const blob = await response.blob();
+                const sizeKB = (blob.size / 1024).toFixed(1);
+                const sizeMB = (blob.size / (1024 * 1024)).toFixed(1);
+                
+                alert(`File size: ${sizeKB}KB (${sizeMB}MB)\n\nRecommendations:\n- For web: Under 500KB\n- For mobile: Under 200KB\n- Current file is ${sizeMB > 1 ? 'too large' : 'acceptable'}`);
+            } catch (error) {
+                alert('Error checking file size: ' + error.message);
+            }
+        }
+
+        function testDifferentPaths() {
+            const paths = [
+                'tessa.jpg',
+                './tessa.jpg',
+                '/tessa.jpg',
+                '../tessa.jpg'
+            ];
+            
+            let results = '<h4>Path Testing Results:</h4>';
+            paths.forEach(path => {
+                const img = new Image();
+                img.onload = () => results += `<p class="success">✅ ${path} - Works</p>`;
+                img.onerror = () => results += `<p class="error">❌ ${path} - Failed</p>`;
+                img.src = path;
+            });
+            
+            document.getElementById('diagnostics').innerHTML = results;
+        }
+
+        // Run diagnostics
+        function runDiagnostics() {
+            const diagnostics = document.getElementById('diagnostics');
+            let results = '<h4>System Information:</h4>';
+            
+            results += `<p><strong>User Agent:</strong> ${navigator.userAgent}</p>`;
+            results += `<p><strong>Connection:</strong> ${navigator.connection ? navigator.connection.effectiveType : 'Unknown'}</p>`;
+            results += `<p><strong>Online:</strong> ${navigator.onLine ? 'Yes' : 'No'}</p>`;
+            results += `<p><strong>Current URL:</strong> ${window.location.href}</p>`;
+            
+            // Test image dimensions
+            const img = document.getElementById('testImage');
+            if (img.complete) {
+                results += `<p><strong>Image Dimensions:</strong> ${img.naturalWidth}x${img.naturalHeight}</p>`;
+            }
+            
+            diagnostics.innerHTML = results;
+        }
+
+        // Initialize
+        window.addEventListener('load', function() {
+            getFileInfo();
+            setTimeout(runDiagnostics, 2000);
+        });
+    </script>
+</body>
+</html> 

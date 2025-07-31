@@ -253,6 +253,28 @@
             height: auto;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: opacity 0.3s ease;
+        }
+
+        .tessa-image.error {
+            display: none;
+        }
+
+        .image-fallback {
+            display: none;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            height: 300px;
+            border-radius: 15px;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #666;
+            margin: 20px 0;
+            border: 3px dashed #ccc;
+        }
+
+        .image-fallback.show {
+            display: flex;
         }
 
     </style>
@@ -309,7 +331,15 @@
         <div class="content-section">
             <h2 class="section-title">Tessa's Picture of the Day  (avrei voluto prendere una foto di te che dormi la bocca aperta ma questo è meglio mi sa) </h2>
             <div class="image-container">
-                <img src="tessa.jpg" alt="Tessa's picture of the day" class="tessa-image">
+                <img src="tessa.jpg" alt="Tessa's picture of the day" class="tessa-image" onerror="this.classList.add('error'); document.getElementById('imageFallback').classList.add('show');">
+                <div id="imageFallback" class="image-fallback">
+                    <div>
+                        <p>🖼️ Image loading...</p>
+                        <p style="font-size: 1rem; margin-top: 10px;">If the image doesn't load, it might be too large (4.1MB)</p>
+                        <p style="font-size: 0.9rem; margin-top: 5px;">Try refreshing the page or check your internet connection</p>
+                        <button onclick="location.reload()" style="margin-top: 15px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">🔄 Retry Loading</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -700,20 +730,30 @@
             const img = document.querySelector('.tessa-image');
             const fallback = document.getElementById('imageFallback');
             
-            if (img) {
+            if (img && fallback) {
                 // Show fallback initially
                 fallback.classList.add('show');
                 
                 img.addEventListener('load', function() {
                     // Hide fallback when image loads successfully
                     fallback.classList.remove('show');
+                    console.log('Image loaded successfully!');
                 });
                 
                 img.addEventListener('error', function() {
                     // Keep fallback visible if image fails to load
                     this.classList.add('error');
                     fallback.classList.add('show');
+                    console.log('Image failed to load. File might be too large or corrupted.');
                 });
+
+                // Set a timeout to show fallback if image takes too long
+                setTimeout(function() {
+                    if (!img.complete) {
+                        fallback.classList.add('show');
+                        console.log('Image taking too long to load, showing fallback');
+                    }
+                }, 5000); // 5 seconds timeout
             }
         });
     </script>
