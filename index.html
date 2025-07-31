@@ -331,12 +331,12 @@
         <div class="content-section">
             <h2 class="section-title">Tessa's Picture of the Day  (avrei voluto prendere una foto di te che dormi la bocca aperta ma questo è meglio mi sa) </h2>
             <div class="image-container">
-                <img src="tessa-min.jpg" alt="Tessa's picture of the day" class="tessa-image" onerror="this.classList.add('error'); document.getElementById('imageFallback').classList.add('show');">
+                <img src="tessa-optimized.jpg" alt="Tessa's picture of the day" class="tessa-image" onerror="this.classList.add('error'); document.getElementById('imageFallback').classList.add('show');">
                 <div id="imageFallback" class="image-fallback">
                     <div>
-                        <p>🖼️ Image loading...</p>
-                        <p style="font-size: 1rem; margin-top: 10px;">If the image doesn't load, check the file path or try refreshing the page</p>
-                        <p style="font-size: 0.9rem; margin-top: 5px;">Make sure tessa-min.jpg is in the same folder as index.html</p>
+                        <p>🖼️ Loading large image (3000x4000px)...</p>
+                        <p style="font-size: 1rem; margin-top: 10px;">This may take a few seconds due to image size</p>
+                        <p style="font-size: 0.9rem; margin-top: 5px;">Consider optimizing the image for faster loading</p>
                         <button onclick="location.reload()" style="margin-top: 15px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">🔄 Retry Loading</button>
                     </div>
                 </div>
@@ -731,29 +731,37 @@
             const fallback = document.getElementById('imageFallback');
             
             if (img && fallback) {
+                console.log('Image element found:', img.src);
+                
                 // Show fallback initially
                 fallback.classList.add('show');
                 
-                img.addEventListener('load', function() {
-                    // Hide fallback when image loads successfully
+                // Check if image is already loaded
+                if (img.complete && img.naturalHeight !== 0) {
+                    console.log('Image already loaded!');
                     fallback.classList.remove('show');
-                    console.log('Image loaded successfully!');
-                });
-                
-                img.addEventListener('error', function() {
-                    // Keep fallback visible if image fails to load
-                    this.classList.add('error');
-                    fallback.classList.add('show');
-                    console.log('Image failed to load. File might be too large or corrupted.');
-                });
-
-                // Set a timeout to show fallback if image takes too long
-                setTimeout(function() {
-                    if (!img.complete) {
+                } else {
+                    img.addEventListener('load', function() {
+                        console.log('Image loaded successfully!');
+                        fallback.classList.remove('show');
+                    });
+                    
+                    img.addEventListener('error', function() {
+                        console.log('Image failed to load');
+                        this.classList.add('error');
                         fallback.classList.add('show');
-                        console.log('Image taking too long to load, showing fallback');
-                    }
-                }, 5000); // 5 seconds timeout
+                    });
+
+                    // Longer timeout for large images
+                    setTimeout(function() {
+                        if (!img.complete) {
+                            console.log('Image taking too long, showing fallback');
+                            fallback.classList.add('show');
+                        }
+                    }, 5000); // 5 seconds timeout for large images
+                }
+            } else {
+                console.log('Image or fallback element not found');
             }
         });
     </script>

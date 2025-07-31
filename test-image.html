@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        img {
+            max-width: 100%;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Simple Image Test</h1>
+    
+    <div class="test-container">
+        <h2>Testing tessa-min.jpg</h2>
+        <p class="info">Attempting to load the image...</p>
+        
+        <img id="testImg" src="tessa-min.jpg" alt="Test" 
+             onload="document.getElementById('status').innerHTML = '<span class=\'success\'>✅ Image loaded successfully!</span>';"
+             onerror="document.getElementById('status').innerHTML = '<span class=\'error\'>❌ Image failed to load</span>';">
+        
+        <div id="status" class="info">Loading...</div>
+        
+        <h3>File Information:</h3>
+        <div id="fileInfo">Checking...</div>
+    </div>
+
+    <div class="test-container">
+        <h2>Alternative Tests</h2>
+        <button onclick="testFile()">Test File Access</button>
+        <button onclick="testDifferentPaths()">Test Different Paths</button>
+        <div id="testResults"></div>
+    </div>
+
+    <script>
+        // Test file access
+        async function testFile() {
+            try {
+                const response = await fetch('tessa-min.jpg');
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const sizeKB = (blob.size / 1024).toFixed(1);
+                    document.getElementById('fileInfo').innerHTML = `
+                        <p class="success">✅ File accessible</p>
+                        <p>Size: ${sizeKB}KB</p>
+                        <p>Type: ${blob.type}</p>
+                    `;
+                } else {
+                    document.getElementById('fileInfo').innerHTML = '<p class="error">❌ File not accessible</p>';
+                }
+            } catch (error) {
+                document.getElementById('fileInfo').innerHTML = `<p class="error">❌ Error: ${error.message}</p>`;
+            }
+        }
+
+        // Test different paths
+        function testDifferentPaths() {
+            const paths = ['tessa-min.jpg', './tessa-min.jpg', '/tessa-min.jpg'];
+            let results = '<h4>Path Test Results:</h4>';
+            
+            paths.forEach(path => {
+                const img = new Image();
+                img.onload = () => results += `<p class="success">✅ ${path} - Works</p>`;
+                img.onerror = () => results += `<p class="error">❌ ${path} - Failed</p>`;
+                img.src = path;
+            });
+            
+            document.getElementById('testResults').innerHTML = results;
+        }
+
+        // Run initial tests
+        window.addEventListener('load', function() {
+            testFile();
+            setTimeout(testDifferentPaths, 1000);
+        });
+    </script>
+</body>
+</html> 
