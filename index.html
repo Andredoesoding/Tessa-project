@@ -692,13 +692,65 @@
         </div>
     </div>
 
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            // Initialize EmailJS with your public key
+            emailjs.init("F1Wu85WRt5ezIyfSw");
+        })();
+    </script>
+
     <script>
         document.getElementById('evaluationForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Thank you for your evaluation! This form is for demonstration purposes only.');
+            
+            // Show loading state
+            const submitBtn = document.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+            
+            // Collect form data
+            const formData = new FormData(e.target);
+            const templateParams = {
+                to_name: formData.get('name') || 'Anonymous',
+                duration: formData.get('duration') || 'Not specified',
+                pet: formData.get('pet') || 'Not specified',
+                sign: formData.get('sign') || 'Not specified',
+                communication: formData.get('communication') || 'Not rated',
+                effort: formData.get('effort') || 'Not rated',
+                romance: formData.get('romance') || 'Not rated',
+                conflict: formData.get('conflict') || 'Not rated',
+                reliability: formData.get('reliability') || 'Not rated',
+                poundtown1: formData.get('poundtown1') || 'Not rated',
+                poundtown2: formData.get('poundtown2') || 'Not rated',
+                poundtown3: formData.get('poundtown3') || 'Not rated',
+                physique_suggestions: formData.get('physique_suggestions') || 'None',
+                activities_suggestions: formData.get('activities_suggestions') || 'None',
+                best_quality: formData.get('best_quality') || 'Not specified',
+                improvement: formData.get('improvement') || 'Not specified',
+                date_again: formData.get('date_again') || 'Not answered',
+                final_verdict: formData.get('final_verdict') || 'Not answered',
+                signature: formData.get('signature') || 'Anonymous',
+                date: formData.get('date') || new Date().toISOString().split('T')[0]
+            };
+            
+            // Send email using EmailJS
+            emailjs.send('service_kpvecyf', 'template_0lg4zek', templateParams)
+                .then(function(response) {
+                    alert('Thank you for your evaluation! It has been sent successfully.');
+                    e.target.reset(); // Clear the form
+                }, function(error) {
+                    alert('Sorry, there was an error sending your evaluation. Please try again.');
+                    console.error('EmailJS Error:', error);
+                })
+                .finally(function() {
+                    // Reset button state
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                });
         });
-
-
     </script>
 </body>
 </html>
