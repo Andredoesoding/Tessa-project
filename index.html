@@ -319,6 +319,39 @@
         </div> -->  
                
         <!-- Image Section -->
+         <!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Cambio immagine</title>
+  <style>
+    #random-img {
+      max-width: 400px; /* adatta alla tua pagina */
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Immagine casuale</h1>
+  <img id="random-img" src="" alt="immagine random">
+
+  <script>
+    // elenco delle immagini (metti i percorsi corretti)
+    const immagini = [
+      "img/tessa1.jpg",
+      "img/tessa2.jpg",
+      "img/tessa3.jpg",
+      "img/tessa4.jpg"
+    ];
+
+    // scegli una a caso
+    const scelta = immagini[Math.floor(Math.random() * immagini.length)];
+
+    // cambia l'attributo src
+    document.getElementById("random-img").src = scelta;
+  </script>
+</body>
+</html>
         <div class="content-section">
             <h2 class="section-title">
                 Tessa's Picture of the Day
